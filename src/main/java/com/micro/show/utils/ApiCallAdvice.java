@@ -52,7 +52,7 @@ public class ApiCallAdvice {
 
         String uri = request.getRequestURI();
         String date = dateFormat(FORMAT_PATTERN_DAY);
-        String ip = getRequestIp(request);
+        String ip = IPUtil.getIpAddress(request);
 
         if (StrUtil.isEmpty(ip)) {
             throw new RuntimeException("IP不能为空。");
@@ -119,18 +119,5 @@ public class ApiCallAdvice {
         return dateFormat.format(new Date());
     }
 
-    private String getRequestIp(HttpServletRequest request) {
-        // 获取请求IP
-        String ip = request.getHeader("x-forwarded-for");
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip) || "null".equals(ip)) {
-            ip = "" + request.getHeader("Proxy-Client-IP");
-        }
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip) || "null".equals(ip)) {
-            ip = "" + request.getHeader("WL-Proxy-Client-IP");
-        }
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip) || "null".equals(ip)) {
-            ip = "" + request.getRemoteAddr();
-        }
-        return ip;
-    }
+
 }

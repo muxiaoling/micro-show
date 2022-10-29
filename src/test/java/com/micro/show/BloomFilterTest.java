@@ -21,6 +21,6 @@ class BloomFilterTest {
     @Test
     void bloomFilter() {
         List<Long> list = shopService.list().stream().map(Shop::getId).collect(Collectors.toList());
-        list.forEach(BloomFilterUtil::addElement);
+        list.forEach(o -> BloomFilterUtil.addElement(o,  "test"));
     }
 }

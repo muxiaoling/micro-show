@@ -21,11 +21,11 @@ public class BloomFilterUtil {
     }
     private static volatile RBloomFilter<Long> bloomFilter;
 
-    public static RBloomFilter<Long> getBloomFilter(){
+    public static RBloomFilter<Long> getBloomFilter(String name){
         if (bloomFilter == null) {
             synchronized (BloomFilterUtil.class) {
                 if (bloomFilter == null) {
-                    bloomFilter = redisson.getBloomFilter("shop_pass_through");
+                    bloomFilter = redisson.getBloomFilter(name);
                     bloomFilter.tryInit(100000000,0.04);
                 }
             }
@@ -33,13 +33,13 @@ public class BloomFilterUtil {
         return bloomFilter;
     }
 
-    public static void addElement(Long element) {
-        getBloomFilter().add(element);
+    public static void addElement(Long element, String name) {
+        getBloomFilter(name).add(element);
     }
 
 
-    public static boolean contains(Long element) {
-        return getBloomFilter().contains(element);
+    public static boolean contains(Long element, String name) {
+        return getBloomFilter(name).contains(element);
     }
 
 }

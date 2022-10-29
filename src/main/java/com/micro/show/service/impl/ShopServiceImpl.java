@@ -43,10 +43,12 @@ public class ShopServiceImpl extends ServiceImpl<ShopMapper, Shop> implements IS
     @Resource
     private CacheClient cacheClient;
 
+    private static final String BLOOM_NAME = "shop_pass_through";
+
     @Override
     public Result queryById(Long id) {
         // 解决缓存穿透，布隆过滤器
-        if (!BloomFilterUtil.contains(id)) {
+        if (!BloomFilterUtil.contains(id, BLOOM_NAME)) {
             return Result.fail("bloom识别：店铺不存在！");
         }
          //互斥锁解决缓存击穿
@@ -132,7 +134,7 @@ public class ShopServiceImpl extends ServiceImpl<ShopMapper, Shop> implements IS
     @Override
     public Result saveShop(Shop shop) {
         this.save(shop);
-        BloomFilterUtil.addElement(shop.getId());
+        BloomFilterUtil.addElement(shop.getId(), BLOOM_NAME);
         return Result.ok(shop.getId());
     }
 }
